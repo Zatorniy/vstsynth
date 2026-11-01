@@ -200,7 +200,7 @@ bool Voice::process(const SynthParams& p, double sampleRate, double pitchBendSem
 	// FM: osc2 модулирует частоту osc1 (до 2x частоты ноты девиации)
 	const double modIdx = p.fmAmount * noteFreq * 2.0;
 	const double osc2Freq = noteFreq * std::pow(2.0, p.detuneCents / 1200.0) * vibRatio;
-	const double s2prev = evalWaveform(p.osc2Wave, phase2_, 0.5); // значение до обновления фазы
+	const double s2prev = evalWaveform(p.osc2Wave, phase2_, p.pulseWidth); // значение до обновления фазы
 	const double f1 = noteFreq * vibRatio + modIdx * s2prev;
 
 	phase1_ += f1 / sampleRate;
@@ -208,7 +208,7 @@ bool Voice::process(const SynthParams& p, double sampleRate, double pitchBendSem
 	phase2_ += osc2Freq / sampleRate;
 	phase2_ -= std::floor(phase2_);
 
-	const double s1 = evalWaveform(p.osc1Wave, phase1_, 0.5);
+	const double s1 = evalWaveform(p.osc1Wave, phase1_, p.pulseWidth);
 	const double s2 = s2prev;
 
 	double sig = s1 + s2 * p.osc2Level;
